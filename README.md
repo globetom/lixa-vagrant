@@ -8,23 +8,33 @@ including Postgres and MySQL.
 
 ## Starting
 
+> _All of the boxes are CentOS based_
+
 Once you have Vagrant installed, follow those steps:
 
 ```bash
 # clone the repo
-$ git clone https://github.com/tiian/lixa-vagrant.git
+$ git clone https://github.com/globetom/lixa-vagrant.git
 $ cd lixa-vagrant
 
 # start the box with the default virtualbox provider
 $ vagrant up
 # or, start with the parallels provider
 $ vagrant up --provider parallels
+# or, start with the azure provider
+$ vagrant up --provider azure
 ```
-
-> _Both of the boxes are CentOS based._
 
 The startup process will install all the dependencies necessary for developing 
 and running LIXA inside the Vagrant box.
+
+> **_Make sure to install the relevant provider plugins for Vagrant._**
+
+### Providers
+
+* [VirtualBox](https://www.vagrantup.com/docs/virtualbox)
+* [Parallels](https://github.com/Parallels/vagrant-parallels)
+* [Azure](https://github.com/Azure/vagrant-azure)
 
 ### Environment Variables
 
@@ -37,6 +47,15 @@ environment variables:
 | `LIXA_VB_CPU` | virtual machine cpu (vCPU) number | `2` |
 | `LIXA_VERSION` | the LIXA version number to download and install at the provision step | `1.1.1` |
 | `LIXA_RUN_TESTS` | indication if the built-in test campaign should be execution after compilation | `false` |
+
+> **_The following are required when using the azure provider_**
+
+| name | description |
+| ---- | ----------- |
+| `AZURE_TENANT_ID` | your azure active directory tenant id |
+| `AZURE_CLIENT_ID` | your azure active directory application client id |
+| `AZURE_CLIENT_SECRET` | your azure active directory application client secret |
+| `AZURE_SUBSCRIPTION_ID` | the azure subscription id you'd like to use |
 
 Use them when provisioning, e.g.:
 ```bash
@@ -85,6 +104,16 @@ $ cd lixa-${LIXA_VERSION}
 
 # test
 $ make check
+```
+
+### Load Testing
+
+Be sure to read the chapter on [tuning](http://lixa.sourceforge.net/lixa-doc/html/ch10.html).
+
+Once you have configured the most appropriate settings for LIXA, run:
+
+```bash
+$ for l in 10 20 30 40 50 60 70 80 90 100 ; do /opt/lixa/bin/lixat -b -s -l $l ; done | grep -v '^ ' > /tmp/bench_result.csv
 ```
 
 [website-badge]: https://img.shields.io/badge/lixa-Learn%20More-43bf58.svg

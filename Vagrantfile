@@ -1,19 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
-Vagrant.configure("2") do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
-
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "centos/6"
-
+Vagrant.configure('2') do |config|
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -45,67 +33,58 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
 
-  # Provider-specific configuration so you can fine-tune various
-  # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-
   if ENV['LIXA_VB_MEM']
-    memory = ENV["LIXA_VB_MEM"]
+    memory = ENV['LIXA_VB_MEM']
   else
-    memory = "1024"
+    memory = '1024'
   end
 
   if ENV['LIXA_VB_CPU']
-    cpus = ENV["LIXA_VB_CPU"]
+    cpus = ENV['LIXA_VB_CPU']
   else
-    cpus = "2"
+    cpus = '2'
   end
- 
-  config.vm.provider "virtualbox" do |vb|
+
+  config.vm.box = 'centos/7'
+
+  config.vm.provider 'virtualbox' do |vb|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = false
- 
+
     # Customize the amount of memory on the VM:
     vb.memory = memory
     vb.cpus = cpus
   end
 
-  config.vm.provider "parallels" do |pl, override|
+  config.vm.provider 'parallels' do |pl, override|
     # Change the box used for parallels
-    override.vm.box = "parallels/centos-6.8"
+    override.vm.box = 'parallels/centos-6.8'
   end
- 
-  # View the documentation for the provider you are using for more
-  # information on available options.
 
-  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
-  # such as FTP and Heroku are also available. See the documentation at
-  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
-  # config.push.define "atlas" do |push|
-  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
-  # end
+  config.vm.provider 'azure' do |az, override|
+    # Change the box used for parallels
+    override.vm.box = 'azure'
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+    az.tenant_id = ENV['AZURE_TENANT_ID']
+    az.client_id = ENV['AZURE_CLIENT_ID']
+    az.client_secret = ENV['AZURE_CLIENT_SECRET']
+    az.subscription_id = ENV['AZURE_SUBSCRIPTION_ID']
+    az.vm_image_urn = 'OpenLogic:CentOS:7.3:latest'
+    az.location = 'westus2'
+  end
 
-  if ENV["LIXA_VERSION"]
-    version = ENV["LIXA_VERSION"]
+  if ENV['LIXA_VERSION']
+    version = ENV['LIXA_VERSION']
   else
-    version = "1.1.1"
+    version = '1.1.1'
   end
 
-  if ENV["LIXA_RUN_TESTS"]
-    run_tests = ENV["LIXA_RUN_TESTS"]
+  if ENV['LIXA_RUN_TESTS']
+    run_tests = ENV['LIXA_RUN_TESTS']
   else
     run_tests = false
   end
 
-  arg1 = version
-  arg2 = run_tests
-  config.vm.provision "shell", path: "provision.sh", env: {"version" => version, "run_tests" => run_tests}, :args => ""
+  config.vm.provision 'shell', path: 'provision.sh', env: {'version' => version, 'run_tests' => run_tests}, :args => ''
 end
