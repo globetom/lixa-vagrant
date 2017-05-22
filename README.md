@@ -116,7 +116,7 @@ Once you have configured the most appropriate settings for LIXA, run:
 $ for l in 10 20 30 40 50 60 70 80 90 100 ; do /opt/lixa/bin/lixat -b -s -l $l ; done | grep -v '^ ' > /tmp/bench_result.csv
 ```
 
-[website-badge]: https://img.shields.io/badge/lixa-Learn%20More-43bf58.svg
+[website-badge]: https://img.shields.io/badge/LIXA-Learn%20More-43bf58.svg
 [website-url]: https://sourceforge.net/p/lixa/wiki/Home
 [documentation-badge]: https://img.shields.io/badge/Documentation-Read%20Online-green.svg
 [documentation-url]: http://lixa.sourceforge.net/lixa-doc/html
